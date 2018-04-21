@@ -48,12 +48,10 @@ int get_dns_string(const char * ss, const char * ds,
 		uint16_t cf = ntohs(*(const uint16_t*)ss);
 		uint16_t offset = (uint16_t)(cf & 0x3fff);	//GET OFFSET
 		int ret = get_dns_string(ds+offset, ds, target);	
-		cout << "special case : " << target << " ret : " << ret << " offset: " << offset << endl;
 		return 2;
 	}
 	else if ((c & 0xc0) == 0)
-	{	
-		cout << "here:  " << ss - ds << endl;
+	{
 		/* DEAL WITH SUBSTRING */
 		int offset = (int)c;
 		strncpy(buf,ss+1,offset);
@@ -74,7 +72,7 @@ int get_dns_request(const char * dns_content, const char * start)
 	curr += sizeof(DNS_request_t);*/
 	std::string qname;
 	curr = get_dns_string(dns_content, start, qname);
-	std::cout << "in request : " << qname << endl;
+	std::cout << qname << endl;
 	curr += sizeof(DNS_request_t);	
 	return curr;
 }
@@ -85,7 +83,7 @@ int get_dns_reponse(const char * dns_content, const char * start)
 	std::string qname;
 	curr += get_dns_string(dns_content, start, qname);
 
-	std::cerr<<"in dns_response : "<<qname << endl;
+	// std::cerr<<"get dns_string : "<<qname << endl;
 
 	DNS_respond_t * rheader =
 		(DNS_respond_t *)(dns_content + curr);
@@ -136,7 +134,6 @@ void parse_dns(const char *dnspkt)
 		int len = get_dns_request(curr, dnspkt);
 		curr+=len;
 	}
-	cout << " --- QD finish ---\n\n";
 	for(int i=0;i<ancount;i++)
 	{
 		int len = get_dns_reponse(curr, dnspkt);
