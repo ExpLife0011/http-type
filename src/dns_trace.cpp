@@ -15,6 +15,7 @@ static int LOG_TIMES = 1000000;
  * map ipaddr (HOST ENDIAN) to url
  */
 std::map<uint32_t, std::string> dnsData;
+int notInDnsData = 0;
 
 /*=============================*/
 /* HELPER FUNCTION DEFINITIONS */
@@ -72,7 +73,8 @@ int get_dns_request(const char * dns_content, const char * start)
 	curr += sizeof(DNS_request_t);*/
 	std::string qname;
 	curr = get_dns_string(dns_content, start, qname);
-	std::cout << qname << endl;
+
+	// std::cerr<<"in request : "<<qname << endl;
 	curr += sizeof(DNS_request_t);	
 	return curr;
 }
@@ -83,7 +85,7 @@ int get_dns_reponse(const char * dns_content, const char * start)
 	std::string qname;
 	curr += get_dns_string(dns_content, start, qname);
 
-	// std::cerr<<"get dns_string : "<<qname << endl;
+	// std::cerr<<"in response : "<<qname << endl;
 
 	DNS_respond_t * rheader =
 		(DNS_respond_t *)(dns_content + curr);
@@ -98,10 +100,13 @@ int get_dns_reponse(const char * dns_content, const char * start)
 		if(rtype == TYPE_A)
 		{
 			uint32_t nip = *(uint32_t*)(dns_content + curr);
-			struct in_addr in;in.s_addr = nip;
 			uint32_t ip = ntohl(nip);
 			dnsData[ip] = qname;
-//			std::cerr<<" got ip : "<<inet_ntoa(in);
+
+			// std::cout << ip << " " << qname << endl;
+
+			struct in_addr in;in.s_addr = nip;
+			// std::cerr<<" got ip : "<<inet_ntoa(in) << endl;
 		}
 		else if (rtype == TYPE_CNAME)
 		{
@@ -128,6 +133,8 @@ void parse_dns(const char *dnspkt)
 	}
 	uint16_t ancount = ntohs(header->ANcount),
 			 qdcount = ntohs(header->QDcount);
+	uint16_t nscount = ntohs(header->NScount),
+			 arcount = ntohs(header->ARcount);
 	curr += sizeof(struct DNS_header_t);
 	for(int i=0;i<qdcount;i++)
 	{
@@ -139,6 +146,16 @@ void parse_dns(const char *dnspkt)
 		int len = get_dns_reponse(curr, dnspkt);
 		curr+=len;
 	}
+	// for(int i=0;i<nscount;i++)
+	// {
+	// 	int len = get_dns_reponse(curr, dnspkt);
+	// 	curr+=len;
+	// }
+	// for(int i=0;i<arcount;i++)
+	// {
+	// 	int len = get_dns_reponse(curr, dnspkt);
+	// 	curr+=len;
+	// }
 }
 
 void dns_roller(u_char *user, const struct pcap_pkthdr *h, const u_char *pkt)
@@ -152,7 +169,6 @@ void dns_roller(u_char *user, const struct pcap_pkthdr *h, const u_char *pkt)
 	const char *app = (char *)((u_char *)trans + sizeof(struct Udp_t));
 
 	uint16_t srcport = ntohs(trans->srcport);
-
 	if(srcport == 53 && net->protocol == 0x11)
 	{
 		parse_dns(app);
