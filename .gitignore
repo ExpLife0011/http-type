@@ -3,8 +3,8 @@ CMakeCache.txt
 cmake_install.cmake
 Makefile
 
-*.dns
-*.http
+#*.dns
+#*.http
 
 Project.cbp
 

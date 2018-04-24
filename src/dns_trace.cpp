@@ -121,7 +121,7 @@ int get_dns_reponse(const char * dns_content, const char * start)
 			uint32_t nip = *(uint32_t*)(dns_content + curr);
 			uint32_t ip = ntohl(nip);
 //			dnsData[ip] = qname;
-            cout << qname << " " << findFather(qname) << endl;
+            //cout << qname << " " << findFather(qname) << endl;
 			dnsData[ip] = findFather(qname);
 
 			// std::cout << ip << " " << qname << endl;
