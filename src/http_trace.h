@@ -179,6 +179,7 @@ public:
 	// Http_content() {}
 };
 
+#include <vector>
 extern std::vector<Http_content> httpData;
 extern std::map<uint32_t, std::map<std::string, int> > httpDataSum;  // ip, type, total len
 extern std::map<std::string, std::map<std::string, int> > httpDataSumDns;  // DNS, type, total len
