@@ -47,9 +47,9 @@ int main(int argc, char *argv[]) {
 	// dnsData
     cout << "notInDnsDataSet: " << notInDnsDataSet.size() << endl;
     cout << "DnsData: " << dnsData.size() << endl;
-//	fout2 << "not in dns data: " << notInDnsData << endl;
-//	for (auto i: dnsData)
-//		fout2 << i.first << " " << i.second << endl;
+	fout2 << "not in dns data: " << notInDnsData << endl;
+	for (auto i: dnsData)
+		fout2 << i.first << " " << i.second << endl;
 
 	// httpData1
 	// for (auto i: httpData)
@@ -61,11 +61,11 @@ int main(int argc, char *argv[]) {
 	// 		cout << i.first << " " << j.first << " " << j.second << endl;
 
 	// httpData3
-//	for (auto i: httpDataSumDns) {
-//		for (auto j: i.second)
-//			 fout << i.first << " " << j.first << " " << j.second << endl;
-//		fout << endl;
-//	}
+	for (auto i: httpDataSumDns) {
+		for (auto j: i.second)
+			 fout << i.first << " " << j.first << " " << j.second << endl;
+		fout << endl;
+	}
 
 	return 0;
 }

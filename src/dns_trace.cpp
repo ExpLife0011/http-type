@@ -17,6 +17,8 @@ static int LOG_TIMES = 1000000;
 std::map<uint32_t, std::string> dnsData;
 int notInDnsData = 0;
 
+map<string, string> father;
+
 /*=============================*/
 /* HELPER FUNCTION DEFINITIONS */
 /*=============================*/
@@ -30,6 +32,23 @@ int get_dns_string(const char * string_start, const char * dns_start,
 /*=================*/
 /* IMPLEMENTATIONS */
 /*=================*/
+
+/*
+int f[100];
+int find(int x) {
+    if (f[x] == x) return x;
+    return f[x] = find(f[x]);
+}
+ */
+
+string findFather(string x) {
+    if (!father.count(x)) {
+        father[x] = x;
+        return x;
+    }
+    if (father[x] == x) return x;
+    return father[x] = findFather(father[x]);
+}
 
 int get_dns_string(const char * ss, const char * ds, 
 							std::string &target)
@@ -85,7 +104,7 @@ int get_dns_reponse(const char * dns_content, const char * start)
 	std::string qname;
 	curr += get_dns_string(dns_content, start, qname);
 
-	// std::cerr<<"in response : "<<qname << endl;
+//	std::cerr<<"in response : "<<qname << endl;
 
 	DNS_respond_t * rheader =
 		(DNS_respond_t *)(dns_content + curr);
@@ -101,7 +120,9 @@ int get_dns_reponse(const char * dns_content, const char * start)
 		{
 			uint32_t nip = *(uint32_t*)(dns_content + curr);
 			uint32_t ip = ntohl(nip);
-			dnsData[ip] = qname;
+//			dnsData[ip] = qname;
+            cout << qname << " " << findFather(qname) << endl;
+			dnsData[ip] = findFather(qname);
 
 			// std::cout << ip << " " << qname << endl;
 
@@ -113,6 +134,9 @@ int get_dns_reponse(const char * dns_content, const char * start)
 			std::string cname;
 			int ret = get_dns_string(dns_content + curr,
 									start, cname);
+
+			father[cname] = qname;
+
 //			std::cerr<<" got cname : "<<cname;
 		}
 	}
