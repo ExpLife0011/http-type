@@ -124,7 +124,7 @@ int get_dns_reponse(const char * dns_content, const char * start)
             //cout << qname << " " << findFather(qname) << endl;
 			dnsData[ip] = findFather(qname);
 
-			// std::cout << ip << " " << qname << endl;
+			//std::cout << ip << " " << qname << endl;
 
 			struct in_addr in;in.s_addr = nip;
 			// std::cerr<<" got ip : "<<inet_ntoa(in) << endl;
@@ -137,6 +137,7 @@ int get_dns_reponse(const char * dns_content, const char * start)
 
 			father[cname] = qname;
 
+			//cout << qname << " " << cname << endl;
 //			std::cerr<<" got cname : "<<cname;
 		}
 	}

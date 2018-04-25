@@ -36,6 +36,7 @@ int main(int argc, char *argv[]) {
 	roll(argv[1], dns_roller);
 
 	cout << "---------- dns finish -----------\n";
+
 	roll(argv[1], http_roller);
 	cout << "---------- http finish -----------\n";
 
@@ -63,7 +64,7 @@ int main(int argc, char *argv[]) {
 	// httpData3
 	for (auto i: httpDataSumDns) {
 		for (auto j: i.second)
-			 fout << i.first << " " << j.first << " " << j.second << endl;
+			 fout << i.first << " " << j.first << " " << j.second << " " << httpDataCntDns[i.first][j.first] << endl;
 		fout << endl;
 	}
 

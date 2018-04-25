@@ -20,10 +20,14 @@ using namespace std;
 
 vector<Http_content> httpData;
 map<uint32_t, map<string, int> > httpDataSum;  // ip, type, total len
-map<string, map<string, int> > httpDataSumDns;  // DNS, type, total len
+map<string, map<string, int> > httpDataSumDns;  // domainName, type, total len
+map<string, map<string, int> > httpDataCntDns;  // domainName, type, total cnt
+
 map<string, int>::iterator p;
+
 extern map<uint32_t, string> dnsData;
 extern int notInDnsData;
+
 set<int> notInDnsDataSet;
 
 /*
@@ -98,8 +102,10 @@ inline void dealDownlink(const char * app, HttpPacket & pack)
 
 		// data3
 		if (!httpDataSumDns.count(domainName)) httpDataSumDns[domainName] = map<string, int>();
-		httpDataSumDns.find(domainName)->second[type] += atoi(len);
+        httpDataSumDns.find(domainName)->second[type] += atoi(len);
 
+        if (!httpDataCntDns.count(domainName)) httpDataCntDns[domainName] = map<string, int>();
+        httpDataCntDns.find(domainName)->second[type] += 1;
 	}
 	return;
 }
