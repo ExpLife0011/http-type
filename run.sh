@@ -13,13 +13,3 @@
 ./Main /media/nuc3/Soar1/HRProject2.0/data/tcpdump/2017-12-09 solveCDN/2017-12-09 
 ./Main /media/nuc3/Soar1/HRProject2.0/data/tcpdump/2017-12-10 solveCDN/2017-12-10 
 ./Main /media/nuc3/Soar1/HRProject2.0/data/tcpdump/2017-12-15 solveCDN/2017-12-15 
-./Main /media/nuc3/Soar1/HRProject2.0/data/tcpdump/2017-12-16 solveCDN/2017-12-16 
-./Main /media/nuc3/Soar1/HRProject2.0/data/tcpdump/2017-12-17 solveCDN/2017-12-17 
-./Main /media/nuc3/Soar1/HRProject2.0/data/tcpdump/2017-12-18 solveCDN/2017-12-18 
-./Main /media/nuc3/Soar1/HRProject2.0/data/tcpdump/2017-12-19 solveCDN/2017-12-19 
-./Main /media/nuc3/Soar1/HRProject2.0/data/tcpdump/2017-12-20 solveCDN/2017-12-20 
-./Main /media/nuc3/Soar1/HRProject2.0/data/tcpdump/2017-12-21 solveCDN/2017-12-21 
-./Main /media/nuc3/Soar1/HRProject2.0/data/tcpdump/2017-12-22 solveCDN/2017-12-22 
-./Main /media/nuc3/Soar1/HRProject2.0/data/tcpdump/2017-12-23 solveCDN/2017-12-23 
-./Main /media/nuc3/Soar1/HRProject2.0/data/tcpdump/2017-12-24 solveCDN/2017-12-24 
-./Main /media/nuc3/Soar1/HRProject2.0/data/tcpdump/2017-12-25 solveCDN/2017-12-25 

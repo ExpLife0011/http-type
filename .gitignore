@@ -17,9 +17,8 @@ debug.txt
 dnsPcap/
 notInDns*
 
-out
-qusetion.txt
+localData/
+question.txt
 run
-tcp-setup2.pcapng
 
 .idea/
