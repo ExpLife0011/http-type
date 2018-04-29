@@ -33,7 +33,7 @@ const char * itoa(int cnt);
  *		dst :		 copy destination
  *
  */
-int getField(char * dst, const char * src, char * targetName);
+int getField(char * dst, const char * src, const char * targetName);
 
 #ifdef __cplusplus
 }

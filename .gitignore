@@ -11,6 +11,8 @@ Project.cbp
 *.backup
 
 Main
+out
+ReceiveRatio
 
 build/
 debug.txt
@@ -20,5 +22,6 @@ notInDns*
 localData/
 question.txt
 run
+py/
 
 .idea/
