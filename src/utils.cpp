@@ -22,7 +22,7 @@ const char * itoa(int cnt)
 	return ret;
 }
 
-int getField(char *dst, const char *src, char *sign) {
+int getField(char *dst, const char *src, const char *sign) {
 	if(!dst || !src || !sign) return -1;
 
 	int i = 0;

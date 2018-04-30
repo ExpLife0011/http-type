@@ -7,6 +7,7 @@
 // #include <bits/endian.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <netinet/tcp.h>
 #include <unistd.h>
 #include <string.h>
 #include <stdlib.h>
