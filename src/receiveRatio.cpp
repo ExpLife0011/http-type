@@ -17,16 +17,18 @@ int main(int argc,char * argv[])
 
     ofstream fout(argv[2]);
 
-    cout << totalHttpPackage << " no length: " << noHttpLengthPackage << endl;
+//    cout << totalHttpPackage << " no length: " << noHttpLengthPackage << endl;
     roll(argv[1], tcp_receive_roller);
+    // finalClear();
 
+    cout << "no length: " << noHttpLengthPackage << endl;
+    cout << "http header tot: " << totalHttpPackage << endl;
 
-    cout << totalHttpPackage << " no length: " << noHttpLengthPackage << endl;
     fout << "no length: " << noHttpLengthPackage << endl;
     fout << "http header tot: " << totalHttpPackage << endl;
 
-    for (auto i: recevieRatio)
-        fout << i << endl;
+    for (auto i: receiveRatio)
+        cout << i << endl;
 
     return 0;
 }
