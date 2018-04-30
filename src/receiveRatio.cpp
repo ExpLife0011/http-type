@@ -19,7 +19,7 @@ int main(int argc,char * argv[])
 
 //    cout << totalHttpPackage << " no length: " << noHttpLengthPackage << endl;
     roll(argv[1], tcp_receive_roller);
-    // finalClear();
+    finalClear();
 
     cout << "no length: " << noHttpLengthPackage << endl;
     cout << "http header tot: " << totalHttpPackage << endl;
@@ -28,7 +28,7 @@ int main(int argc,char * argv[])
     fout << "http header tot: " << totalHttpPackage << endl;
 
     for (auto i: receiveRatio)
-        cout << i << endl;
+        cout << i.first << " " << i.second << endl;
 
     return 0;
 }

@@ -12,12 +12,14 @@
 #include <string>
 #include <iostream>
 
+
 using std::map;
 using std::vector;
 using std::string;
 using std::ostream;
-using std::cout;
+using std::cerr;
 using std::endl;
+using std::pair;
 
 struct TcpFlow {
     uint32_t srcip, dstip;
@@ -37,7 +39,7 @@ struct TcpFlow {
         return a.dstport < b.dstport;
     }
 
-    friend ostream& operator<< (ostream &o, TcpFlow &cur) {
+    friend ostream& operator<< (ostream &o, const TcpFlow &cur) {
         o << cur.srcip << " " << cur.dstip << " " << cur.srcport << " " << cur.dstport;
         return o;
     }
@@ -51,16 +53,17 @@ struct HttpReceive {
     uint32_t receive_ack;
 
     HttpReceive() {}
-    friend ostream& operator<< (ostream &o, HttpReceive &cur) {
+    friend ostream& operator<< (ostream &o, const HttpReceive &cur) {
         // o << cur.http_type << " " << cur.total << " " << cur.start_seq << " " << cur.receive_ack;
         o << cur.http_type << " " << cur.total << " " << cur.receive_ack - cur.start_seq;
+        cerr << " " << cur.receive_ack << " " <<  cur.start_seq;
         return o;
     }
 };
 
 extern map<TcpFlow, HttpReceive> flowReceive;
 
-extern vector<HttpReceive> receiveRatio;
+extern vector<pair<TcpFlow, HttpReceive> > receiveRatio;
 
 extern int totalHttpPackage;
 extern int noHttpLengthPackage;

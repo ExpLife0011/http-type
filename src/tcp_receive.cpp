@@ -5,6 +5,7 @@
 #include "tcp_receive.h"
 #include <assert.h>
 #include <iostream>
+#include <set>
 
 #define ISUSR(ip) (((ip) & 0xffff0000) == 0xc0a80000)
 #define ISHTTP(port) ((port) == 80)
@@ -13,7 +14,10 @@ using namespace std;
 
 map<TcpFlow, HttpReceive> flowReceive;
 
-vector<HttpReceive> receiveRatio;
+vector<pair<TcpFlow, HttpReceive> > receiveRatio;
+
+// store the seq num of httpBody ever receive, in case of retransmission
+map<TcpFlow, set<int> > httpBodyHash;
 
 int totalHttpPackage = 0;
 int noHttpLengthPackage = 0;
@@ -29,8 +33,9 @@ const char* findHttpBody(const char *app) {
 
 // delete one http flow
 mapIt& clearHttp(mapIt &curHttp) {
-    receiveRatio.push_back(curHttp->second);
-    // curHttp = flowReceive.erase(curHttp);
+    // cerr << "in clear " << (curHttp->first) << " " << (curHttp->second) << endl;
+    receiveRatio.push_back(make_pair(curHttp->first, curHttp->second));
+    curHttp = flowReceive.erase(curHttp);
     return curHttp;
 }
 
@@ -42,15 +47,21 @@ void checkFinish(mapIt &curHttp) {
 }
 
 // if there is an old httpflow not finish, we clear it
-void checkOld(TcpFlow &curFlow) {
+int checkOld(TcpFlow &curFlow, int bodyStart) {
     p = flowReceive.find(curFlow);
-    if (p != flowReceive.end())
+    if (p != flowReceive.end() && p->second.start_seq != bodyStart) {
         clearHttp(p);
+        return 1;
+    }
+    if (p == flowReceive.end()) return 2;
+
+    // p->second.start_seq = bodyStart -> this is a retransmission
+    return 0;
 }
 
 // after roll over all package, we clear the package in our Map;
 void finalClear() {
-//    cout << flowReceive.size() << endl;
+//    cerr << flowReceive.size() << endl;
     for (mapIt i = flowReceive.begin(); i != flowReceive.end();) {
         i = clearHttp(i);
     }
@@ -81,14 +92,16 @@ void tcp_receive_roller(u_char *user, const struct pcap_pkthdr *h, const u_char 
     //Use the length of http payload
     tot_len = tot_len - net->ihl*4 - trans->doff*4;
 
+    // cerr << endl;
+    // cerr << flowReceive.size() << endl;
+    
     //not http? return
     if(!ISHTTP(srcport) && !ISHTTP(dstport)) return;
 
     // no http data
 //    if (tot_len == 0) return;
 
-    // cerr << endl;
-
+    
     // consider server-client flow
     if(ISHTTP(srcport)) {
         TcpFlow curFlow(srcip, dstip, srcport, dstport);
@@ -97,30 +110,42 @@ void tcp_receive_roller(u_char *user, const struct pcap_pkthdr *h, const u_char 
         if (getField(type, app, "Content-Type: ") == 0) {
             // this is a header package
             totalHttpPackage++;
+            // cerr << "in content-type\n";
 
-//            cout << totalHttpPackage << " " << noHttpLengthPackage << endl;
+//            cerr << totalHttpPackage << " " << noHttpLengthPackage << endl;
             if (getField(len, app, "Content-Length: ") < 0) {
                 // but no length
-//                cout << "in critial area " << totalHttpPackage << " " << noHttpLengthPackage << endl;
+//                cerr << "in critial area " << totalHttpPackage << " " << noHttpLengthPackage << endl;
                 noHttpLengthPackage++;
                 return;
-            }
-
-            // cerr << "len " << len << endl;
-            // cerr << " seq " << seq << endl;
-            checkOld(curFlow);
+            } 
 
             const char *httpBody = findHttpBody(app);
             int httpHeaderLen = httpBody - app;
+            int bodyStart = seq + httpHeaderLen;
 
+            // this is a retransmission, we do nothing
+            if (!checkOld(curFlow, bodyStart)) return;
+
+            // this is a retransmission, we do nothing
+            if (httpBodyHash.count(curFlow)
+                && httpBodyHash[curFlow].count(bodyStart))
+                return;
+
+            // add to hash
+            if (!httpBodyHash.count(curFlow)) 
+                httpBodyHash[curFlow] = set<int>();
+            httpBodyHash[curFlow].insert(bodyStart);
+            
             // cerr << "httpHeaderLen " << httpHeaderLen << endl; 
             HttpReceive httpReceive;
             httpReceive.total = atoi(len);
             httpReceive.http_type = type;
-            httpReceive.start_seq = seq + httpHeaderLen;
+            httpReceive.start_seq = bodyStart;
+            httpReceive.receive_ack = bodyStart;
 
             flowReceive[curFlow] = httpReceive;
-            // cerr << "curFlow " << curFlow << "\n";
+            // cerr << "curFlow " << curFlow << " len " << len << "\n";
         }
 
         return;
@@ -131,7 +156,7 @@ void tcp_receive_roller(u_char *user, const struct pcap_pkthdr *h, const u_char 
         TcpFlow curFlow(dstip, srcip, dstport, srcport);
         
         // this is a ack packet
-        if ((tcp_flag & TH_ACK) == TH_ACK) {
+        if (tcp_flag & TH_ACK) {
             p = flowReceive.find(curFlow);
             if (p == flowReceive.end()) {
                 // cerr << "died " << ack << endl;
@@ -141,8 +166,8 @@ void tcp_receive_roller(u_char *user, const struct pcap_pkthdr *h, const u_char 
             
             checkFinish(p);
         }
-        else if (((tcp_flag & TH_ACK) == TH_ACK)
-                 || ((tcp_flag & TH_FIN) == TH_FIN)) {
+        else if ((tcp_flag & TH_ACK)
+                 || (tcp_flag & TH_FIN)) {
 
             p = flowReceive.find(curFlow);
             if (p != flowReceive.end())
