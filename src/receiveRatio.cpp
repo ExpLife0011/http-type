@@ -28,7 +28,7 @@ int main(int argc,char * argv[])
     fout << "http header tot: " << totalHttpPackage << endl;
 
     for (auto i: receiveRatio)
-        cout << i.first << " " << i.second << endl;
+        fout << i.first << " " << i.second << endl;
 
     return 0;
 }

@@ -7,13 +7,15 @@
 #include <iostream>
 #include <set>
 
+#define LOG_TIMES 1000000
 #define ISUSR(ip) (((ip) & 0xffff0000) == 0xc0a80000)
 #define ISHTTP(port) ((port) == 80)
 
 using namespace std;
 
-map<TcpFlow, HttpReceive> flowReceive;
+static size_t total;
 
+map<TcpFlow, HttpReceive> flowReceive;
 vector<pair<TcpFlow, HttpReceive> > receiveRatio;
 
 // store the seq num of httpBody ever receive, in case of retransmission
@@ -67,7 +69,10 @@ void finalClear() {
     }
 }
 
+
 void tcp_receive_roller(u_char *user, const struct pcap_pkthdr *h, const u_char *pkt) {
+    if (total % LOG_TIMES == 0) 
+        cerr<<total<<"packets done"<<endl; 
     // Only consider a protocol stack of Ethernet, IPv4 and TCP
     const struct Ethernet *link = (struct Ethernet *)pkt;
     const struct Ipv4 *net = (struct Ipv4 *)(pkt + sizeof(struct Ethernet));

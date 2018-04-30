@@ -18,5 +18,5 @@ add_executable(ReceiveRatio
         ${CXX_SOURCES}
         )
 
-#TARGET_LINK_LIBRARIES(Main ${PCAP})
-#TARGET_LINK_LIBRARIES(ReceiveRatio ${PCAP})
+TARGET_LINK_LIBRARIES(Main ${PCAP})
+TARGET_LINK_LIBRARIES(ReceiveRatio ${PCAP})
