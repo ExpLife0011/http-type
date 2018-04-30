@@ -46,6 +46,12 @@ void checkFinish(mapIt &curHttp) {
     HttpReceive &curReceive = curHttp->second;
     if (curReceive.receive_ack - curReceive.start_seq == curReceive.total)
         clearHttp(curHttp);
+    
+    // ack with http content and fin together
+    if (curReceive.receive_ack - curReceive.start_seq == curReceive.total + 1) {
+        curReceive.receive_ack -= 1;
+        clearHttp(curHttp);
+    }
 }
 
 // if there is an old httpflow not finish, we clear it
