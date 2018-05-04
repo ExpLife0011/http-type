@@ -22,7 +22,7 @@ notInDns*
 localData/
 question.txt
 run
-py/
+#py/
 
 .idea/
 .vscode/

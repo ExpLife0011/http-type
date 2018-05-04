@@ -79,6 +79,7 @@ void finalClear() {
 void tcp_receive_roller(u_char *user, const struct pcap_pkthdr *h, const u_char *pkt) {
     if (total % LOG_TIMES == 0) 
         cerr<<total<<"packets done"<<endl; 
+    total++;
     // Only consider a protocol stack of Ethernet, IPv4 and TCP
     const struct Ethernet *link = (struct Ethernet *)pkt;
     const struct Ipv4 *net = (struct Ipv4 *)(pkt + sizeof(struct Ethernet));
