@@ -3,6 +3,7 @@
 #include <map>
 #include <set>
 #include <iostream>
+#include <fstream>
 #include <algorithm>
 
 #define LOG_TIMES 1000000
@@ -36,6 +37,8 @@ public:
 };
 
 static size_t total;
+
+ofstream fout;
 
 FILE *infp, *outfp;
 Flow fl;
@@ -81,8 +84,8 @@ void wifi_error(u_char *user, const struct pcap_pkthdr *h, const u_char *pkt) {
 			if (syn	&& serverAck[fl].count(seq + 1)) {
 				lossCnt++;
 				userRequestCnt--;
-
-				cerr << total << endl;
+				
+				//fout << total << endl;
 			}
 		}
 	}
@@ -108,14 +111,16 @@ int main(int argc, char *argv[]) {
 	}
 
 	infp = fopen(argv[1], "r");
-	outfp = fopen(argv[2], "w+");
-	assert(infp && outfp);
+	fout.open(argv[2]);
+
+	assert(infp);
 
 	pcap_t *pcap = pcap_fopen_offline(infp, NULL);
 	pcap_loop(pcap, 0, wifi_error, err);
 
-	cout << "loss : " << lossCnt << endl;
-	cout << "user request : " << userRequestCnt << endl;
-	cout << "total : " << total << endl;
+	fout << "loss : " << lossCnt << endl;
+	fout << "user request : " << userRequestCnt << endl;
+	fout << "ratio : " << double(lossCnt) / userRequestCnt << endl;
+	fout << "total : " << total << endl;
 	return 0;
 }

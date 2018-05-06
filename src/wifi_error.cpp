@@ -87,7 +87,6 @@ void wifi_error(u_char *user, const struct pcap_pkthdr *h, const u_char *pkt) {
 			if ((syn || tcpLen != 0) 
 				&& serverAck[fl].count(seq + tcpLen)) {
 				lossCnt++;
-				cerr << total << endl;
 			}
 		}
 	}
