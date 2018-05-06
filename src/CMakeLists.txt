@@ -18,5 +18,13 @@ add_executable(ReceiveRatio
         ${CXX_SOURCES}
         )
 
+add_executable(WifiError
+        wifi_error.cpp)
+
+add_executable(WifiErrorSyn
+        wifi_error_syn.cpp)
+
 TARGET_LINK_LIBRARIES(Main ${PCAP})
 TARGET_LINK_LIBRARIES(ReceiveRatio ${PCAP})
+TARGET_LINK_LIBRARIES(WifiError ${PCAP})
+TARGET_LINK_LIBRARIES(WifiErrorSyn ${PCAP})

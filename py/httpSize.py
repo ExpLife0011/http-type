@@ -13,27 +13,25 @@ for cnt, filename in enumerate(filenames):
 		for i in f.readlines():
 			t = i.split()
 			if len(t) != 3: continue
-			
-#			part = t[0].split('.')
-#			print(part)
-#			if len(part) < 2: continue
-#			lastTwo = part[-3] + '.' + part[-2] + '.' + part[-1]
-#			lastTwo = part[-2] + '.' + part[-1]
-#			print(lastTwo)
-#			if cnt > 12 and lastTwo[::-1] not in httpSize: print(lastTwo)
-			
+						
 			if t[0] not in httpSize: httpSize[t[0]] = 0
 			httpSize[t[0]] += int(t[2])
-#	afterRank = [() for i ]
-#	sorted(httpSize.items(), cmp=lambda x, y: cmp(x[1], y[1]))
-	a = sorted(httpSize.items(), key=itemgetter(1), reverse=True)
 
-	for i, j in a[:10]:
-		if i not in top: top[i] = 0
-		top[i] += j
-#	print(a[:10])
-#	exit()
-	print(filename, len(httpSize))
+a = sorted(httpSize.items(), key=itemgetter(1), reverse=True)
+
+for i, j in a:
+	print(i, j)
+	if i not in top: top[i] = 0
+	top[i] += j
+#print(a)
+exit()
+#	print(filename, len(httpSize))
+
+b = sorted(top.items(), key=itemgetter(1), reverse=True)
+for i, j in b[:50]:
+	print(i, j)
+exit()
+
 for i in top:
 	print(i, top[i])
 exit()
