@@ -4,7 +4,7 @@ from operator import itemgetter
 httpSize = {}
 top = {}
 
-path = "../solveCDN/"
+path = "../solveCDNCnt/"
 filenames = os.listdir(path)
 filenames.sort()
 for cnt, filename in enumerate(filenames):
