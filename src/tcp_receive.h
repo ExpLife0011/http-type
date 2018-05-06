@@ -56,7 +56,7 @@ struct HttpReceive {
     friend ostream& operator<< (ostream &o, const HttpReceive &cur) {
         // o << cur.http_type << " " << cur.total << " " << cur.start_seq << " " << cur.receive_ack;
         o << cur.http_type << " " << cur.total << " " << cur.receive_ack - cur.start_seq;
-        cerr << " " << cur.receive_ack << " " <<  cur.start_seq;
+        // cerr << " " << cur.receive_ack << " " <<  cur.start_seq;
         return o;
     }
 };
